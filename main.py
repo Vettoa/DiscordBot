@@ -3,7 +3,7 @@ from discord.ext import commands
 import json
 
 def read_token():
-    with open("C:/Users/kchar/PycharmProjects/DiscordBot/token", 'r') as f:
+    with open("token", 'r') as f:
         lines = f.readline()
         return lines
 
