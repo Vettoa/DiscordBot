@@ -1,13 +1,13 @@
 import discord
 from discord.ext import commands
 import json
+import datetime
+import os
+from dotenv import load_dotenv
 
-def read_token():
-    with open("C:/Users/kchar/PycharmProjects/DiscordBot/token", 'r') as f:
-        lines = f.readline()
-        return lines
+load_dotenv('DiscordBot2/token.env')
+token = os.getenv("TOKEN")
 
-token = read_token()
 list_days_of_week = ["Poniedziałek", "Wtorek", "Środa", "Czwartek", "Piątek", "Sobota", "Niedziela"]
 intents = discord.Intents.all()
 bot = commands.Bot(command_prefix='!', intents=intents, help_command=None)
@@ -45,13 +45,22 @@ async def p(ctx, message_id, message_persons, *message_text): #Add to "ramowka"
 
 @bot.command()
 @commands.check(lambda ctx: any(role.name in ["Chief Executive Officer", "Executive Officer"] for role in ctx.author.roles))
-async def r(ctx): #Creat "ramówka'
-    embed = discord.Embed(title=f"**Ramówka**", description="", color=0x020080)
+async def r(ctx, week_start= 0): #Creat "ramówka'
+
+    """Date to ramowka"""
+    date = datetime.date.today()
+    today_date = date.weekday()
+    date_start_ramowka = date - datetime.timedelta(days=today_date)
+    date_end_ramowka = date_start_ramowka + datetime.timedelta(days=6)
+
+    embed = discord.Embed(title="{}".format('***RAMÓWKA***'), description=f"{date_start_ramowka} - {date_end_ramowka}", color=0x020080)
     await ctx.channel.send(embed=embed)
+    date_start_ramowka = date_start_ramowka - datetime.timedelta(days=1)
 
     '''Creating Embed'''
     for i in list_days_of_week:
-        embed = discord.Embed(title=f"{i}", description="", color=0x020080)
+        date_start_ramowka = date_start_ramowka + datetime.timedelta(days=1)
+        embed = discord.Embed(title=f"{i} | {date_start_ramowka}", description="", color=0x020080)
         await ctx.channel.send(embed=embed)
 
 
@@ -132,5 +141,3 @@ async def on_raw_reaction_add(payload):
 
 
 bot.run(token)
-
-
