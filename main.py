@@ -10,8 +10,6 @@ token = os.getenv("TOKEN")
 list_days_of_week = ["Poniedziałek", "Wtorek", "Środa", "Czwartek", "Piątek", "Sobota", "Niedziela"]
 intents = discord.Intents.all()
 bot = commands.Bot(command_prefix='!', intents=intents, help_command=None)
-date = datetime.date.today()
-current_time = datetime.datetime.now()
 
 
 @bot.event
@@ -54,17 +52,16 @@ async def p(ctx, message_id, message_persons, *message_text):  # Add to "ramowka
 
 
 @bot.command()
-@commands.check(lambda ctx: any(role.name in ["Chief Executive Officer", "Executive Director"] for role in ctx.author.roles))
-async def r(ctx, week_start=0):  # Creat "ramówka'
+@commands.check(lambda ctx: any(role.name in ["Chief Executive Officer", "Executive Officer"] for role in ctx.author.roles))
+async def r(ctx, week_start= 0): #Creat "ramówka'
 
     """Date to ramowka"""
+    date = datetime.date.today()
     today_date = date.weekday()
     date_start_ramowka = date - datetime.timedelta(days=today_date)
     date_end_ramowka = date_start_ramowka + datetime.timedelta(days=6)
 
-    embed = discord.Embed(title="{}".format('***RAMÓWKA***'),
-                          description=f"{date_start_ramowka.strftime('%d.%m.%Y')} - {date_end_ramowka.strftime('%d.%m.%Y')}",
-                          color=0x020080)
+    embed = discord.Embed(title="{}".format('***RAMÓWKA***'), description=f"{date_start_ramowka.strftime('%d.%m.%Y')} - {date_end_ramowka.strftime('%d.%m.%Y')}", color=0x020080)
     embed.set_thumbnail(url="https://i.imgur.com/QZv9iSz.png")
     await ctx.channel.send(embed=embed)
     date_start_ramowka = date_start_ramowka - datetime.timedelta(days=1)
@@ -103,11 +100,12 @@ async def c(ctx, message_id):  # Clear channel
 
 
 @bot.command()
-async def reklama(ctx, days, *args):  # Ads embed for SA News
-    date_end_ads = date + datetime.timedelta(int(days) + 1)  # days to end ads
+async def reklama(ctx, days, *args): #Ads embed for SA News
+    date = datetime.date.today()
+    current_time = datetime.datetime.now()
+    date_end_ads = date + datetime.timedelta(int(days)+1) #days to end ads
     ad_text = " ".join(args) + f"\n\n**{days}** dni, Koniec: **{date_end_ads.strftime('%d.%m.%Y')}**"
-    embed = discord.Embed(title=f"Reklama {date.strftime('%d.%m')} {current_time.strftime('%H:%M')}",
-                          description=f'{ad_text}', color=0x020080)
+    embed = discord.Embed(title=f"Reklama {date.strftime('%d.%m')} {current_time.strftime('%H:%M')}", description=f'{ad_text}', color=0x020080)
     embed.set_thumbnail(url="https://i.imgur.com/QZv9iSz.png")
     await ctx.channel.send(embed=embed)
 
